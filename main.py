@@ -703,7 +703,7 @@ def list_page(response: Response, request: Request):
     # ここでは単純にhtmlを返す
     return template("shadow.html", {"request": request})
 
-@app.get("/static", response_class=HTMLResponse)
+@app.get("/static.pdf", response_class=HTMLResponse)
 def list_page(response: Response, request: Request):
     # Cookieのチェックをしないため、承諾していない場合でもアクセス可能
     # 必要に応じてデータを取得
