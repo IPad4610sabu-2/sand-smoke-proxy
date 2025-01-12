@@ -263,7 +263,7 @@ def get_data(videoid):
     global logs
     try:
         # 最初に既存の方法でデータを取得しようとする
-        t = json.loads(apirequest_video(r"api/v1/videos/" + urllib.parse.quote(videoid)))
+        t = json.loads(apirequest(r"api/v1/videos/" + urllib.parse.quote(videoid)))
     except (APItimeoutError, json.JSONDecodeError) as e:
         print(f"データ取得に失敗しました: {e}")
         # 失敗したときには代替の方法を使用する
@@ -293,35 +293,15 @@ def get_data(videoid):
     )
 
 def getting_data(videoid):
-    # ストリームURLを取得するためのAPIのリスト
-    stream_api_urls = [
-        f"https://sand-smoke-api.onrender.com/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
-        f"https://new-era-hack.onrender.com/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
-        f"https://new-era-hack.vercel.app/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
-        f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi"
-    ]
-
-    stream_url = ""
-    
-    # ストリームURLを取得
-    for api_url in stream_api_urls:
-        try:
-            stream_response = requests.get(api_url)
-            if stream_response.status_code == 200:
-                stream_data = stream_response.json()
-                stream_url = stream_data.get("stream_url", "")
-                if stream_url:  # ストリームURLが取得できたらループを抜ける
-                    break
-            else:
-                print(f"ストリームAPIエラー: ステータスコード {stream_response.status_code}")
-        except Exception as e:
-            print(f"ストリームURLの取得中にエラーが発生しました: {e}")
-
-    # 既存のデータ取得処理を行う
     urls = [
-        f"https://ludicrous-wonderful-temple.glitch.me/api/login/{urllib.parse.quote(videoid)}",
-        f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi",
-        f"https://jade-highfalutin-account.glitch.me/api/login/{urllib.parse.quote(videoid)}"
+        f"https://just-frequent-network.glitch.me/api/{urllib.parse.quote(videoid)}",
+        f"https://amenable-charm-lute.glitch.me/api/login/{urllib.parse.quote(videoid)}",
+        f"https://free-sudden-kiss.glitch.me/api/login/{urllib.parse.quote(videoid)}",
+        f"https://wtserver1.glitch.me/api/login/{urllib.parse.quote(videoid)}",
+        f"https://wataamee.glitch.me/api/{urllib.parse.quote(videoid)}",
+        f"https://natural-voltaic-titanium.glitch.me/api/login/{urllib.parse.quote(videoid)}",
+        f"https://jade-highfalutin-account.glitch.me/api/login/{urllib.parse.quote(videoid)}",
+        f"https://watawatawata.glitch.me/api/login/{urllib.parse.quote(videoid)}"
     ]
     
     for url in urls:
@@ -330,39 +310,56 @@ def getting_data(videoid):
             if response.status_code == 200:
                 t = response.json()
                 
-                # 推奨動画リストの構築
-                related_videos = [{
+                # 推奨動画情報の取得
+                recommended_videos = [{
                     "id": t["videoId"],
                     "title": t["videoTitle"],
                     "authorId": t["channelId"],
                     "author": t["channelName"],
-                    "viewCount": t["videoViews"]
+                    "viewCountText": f"{t['videoViews']} views"
                 }]
                 
-                # 必要な情報を取得
-                description = t["videoDes"].replace("\n", "<br>")
-                title = t["videoTitle"]
-                authorId = t["channelId"]
-                author = t["channelName"]
-                author_icon = t["channelImage"]
-                view_count = t["videoViews"]
+                # ストリームURLや他の情報を取得
+                stream_url = t.get("stream_url", "")
+                description = t.get("videoDes", "").replace("\n", "<br>")
+                title = t.get("videoTitle", "")
+                authorId = t.get("channelId", "")
+                author = t.get("channelName", "")
+                author_icon = t.get("channelImage", "")
                 
-                # get_dataの形式に合わせて返す
-                return (
-                    related_videos,  # 推奨動画
-                    [stream_url],     # ストリームURLを追加
-                    description,      # 説明文
-                    title,            # 動画タイトル
-                    authorId,         # アウティアのID
-                    author,           # 動画の作者
-                    author_icon,      # 作者のアイコンURL
-                    view_count        # ビュー数
-                )
+                return recommended_videos, stream_url, description, title, authorId, author, author_icon
+            
         except Exception as e:
-            print(f"{url} からのデータ取得に失敗しました: {e}")
-    
-    raise Exception("全ての代替URLからデータを取得できませんでした。")
+            print(f"{url} からのデータ取得中にエラーが発生しました: {e}")
 
+def get2_data(videoid):
+    urls = [
+        f"https://test-blank-page.glitch.me/api/server/v1/{urllib.parse.quote(videoid)}",
+        f"https://test-blank-page.glitch.me/api/server/v2/{urllib.parse.quote(videoid)}",
+        f"https://test-blank-page.glitch.me/api/server/v3/{urllib.parse.quote(videoid)}",
+        f"https://test-blank-page.glitch.me/api/server/v4/{urllib.parse.quote(videoid)}",
+        f"https://test-blank-page.glitch.me/api/server/v5/{urllib.parse.quote(videoid)}",
+        f"https://test-blank-page.glitch.me/api/server/v7/{urllib.parse.quote(videoid)}"
+    ]
+    
+    for url in urls:
+        try:
+            response = requests.get(url)
+            if response.status_code == 200:
+                t = response.json()
+                
+                # ストリームURLや動画情報を取得
+                stream_url = t.get("stream_url", "")
+                description = t.get("videoDes", "").replace("\n", "<br>")
+                title = t.get("videoTitle", "")
+                authorId = t.get("channelId", "")
+                author = t.get("channelName", "")
+                author_icon = t.get("channelImage", "")
+                
+                return stream_url, description, title, authorId, author, author_icon
+            
+        except Exception as e:
+            print(f"{url} からのデータ取得中にエラーが発生しました: {e}")
 
 def load_search(i):
     # 動画情報の取得
